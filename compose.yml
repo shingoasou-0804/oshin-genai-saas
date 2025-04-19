@@ -1,0 +1,22 @@
+services:
+  genai-app:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - type: bind
+        source: .
+        target: /usr/src/app
+      - type: volume
+        source: genai-saas-node_modules
+        target: /usr/src/app/genai-saas/node_modules
+    networks:
+      - frontends
+    command: ["npm", "run", "dev"]
+volumes:
+  genai-saas-node_modules:
+    driver: local
+    name: genai-saas-node_modules
+networks:
+  frontends:
+    external: true
