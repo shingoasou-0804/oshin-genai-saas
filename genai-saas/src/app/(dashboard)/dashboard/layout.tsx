@@ -1,3 +1,4 @@
+import MobileNav from "@/components/dashboard/mobile-nav";
 import DashboardNav from "@/components/dashboard/nav";
 import Link from "next/link";
 
@@ -12,6 +13,7 @@ export default function DashboardRootLayout({
       {/* header */}
       <header className="sticky top-0 z-40 border-b bg-background">
         <div className="container flex items-center h-16 px-4">
+            <MobileNav />
             <Link href="/">
                 <h1 className="text-lg font-bold">AI Images Generator</h1>
             </Link>
