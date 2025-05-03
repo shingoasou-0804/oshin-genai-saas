@@ -19,3 +19,5 @@ export const tools = {
         component: ImageOptimizer,
     },
 }
+
+export type ToolType = keyof typeof tools;

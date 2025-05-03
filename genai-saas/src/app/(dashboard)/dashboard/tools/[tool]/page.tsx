@@ -1,11 +1,19 @@
-import { tools } from "@/config/tool";
+import PageContainer from "@/components/dashboard/page-container";
+import PageHeader from "@/components/dashboard/page-header";
+import { tools, ToolType } from "@/config/tool";
+import { notFound } from "next/navigation";
 
-const ToolPage = () => {
-    const tool = tools["image-generator"]
+const ToolPage = async ({ params }: { params: Promise<{ tool: string }> }) => {
+    const toolType = (await params).tool as ToolType;
+    const tool = tools[toolType];
+    if (!tool) {
+        notFound();
+    }
     return (
-        <div>
-            <h2>{tool.title}</h2>
-        </div>
+        <PageContainer>
+            <PageHeader title={tool.title} description={tool.description} />
+            Test
+        </PageContainer>
     );
 };
 
