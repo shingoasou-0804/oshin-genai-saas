@@ -9,10 +9,14 @@ const ToolPage = async ({ params }: { params: Promise<{ tool: string }> }) => {
     if (!tool) {
         notFound();
     }
+
+    const ToolComponent = tool.component;
     return (
         <PageContainer>
             <PageHeader title={tool.title} description={tool.description} />
-            Test
+            <div>
+                <ToolComponent />
+            </div>
         </PageContainer>
     );
 };
