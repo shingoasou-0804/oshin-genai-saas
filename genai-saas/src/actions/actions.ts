@@ -25,10 +25,11 @@ export async function generateImage(
         });
 
         const data = await response.json();
+        console.log(data.imageUrl);
 
         return {
             status: "success",
-            imageUrl: data.imageURL,
+            imageUrl: data.imageUrl,
             keyword: keyword,
         }
     } catch (error) {

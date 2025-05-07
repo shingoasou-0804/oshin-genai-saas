@@ -4,10 +4,10 @@ import FormData from "form-data";
 
 export async function POST(req: Request) {
     const { keyword } = await req.json();
-    console.log(keyword);
+
     try {
         const payload = {
-            prompt: "Lighthouse on a cliff overlooking the ocean",
+            prompt: `Create Image with ${keyword}`,
             output_format: "png"
         };
         const formData = new FormData();
@@ -31,9 +31,11 @@ export async function POST(req: Request) {
             throw new Error(`API error: ${response.status}`);
         }
 
-        console.log(response.data);
+        // Base64エンコーディング
+        const base64Image = Buffer.from(response.data).toString("base64");
+        const imageUrl = `data:image/png;base64,${base64Image}`;
 
-        return NextResponse.json(response.data);
+        return NextResponse.json({ imageUrl });
     } catch (error) {
         console.error("Error generate image:", error);
         return NextResponse.json(

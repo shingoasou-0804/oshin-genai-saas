@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { GenerateImageState } from '@/types/actions';
 import React, { useActionState } from 'react';
+import { Download } from "lucide-react";
 
 const initialState: GenerateImageState = {
     status: "idle",
@@ -30,8 +31,27 @@ const ImageGenerator = () => {
                     <Button>画像を生成する</Button>
                 </form>
             </div>
+
+            {/* image preview */}
+            {state.imageUrl && (
+                <div className='space-4'>
+                    <div className='overflow-hidden rounded-lg border bg-background'>
+                        <div className='aspect-video relative'>
+                            <img
+                                src={state.imageUrl}
+                                alt='Generated image'
+                                className='w-full h-full object-cover'
+                            />
+                        </div>
+                    </div>
+                    <Button className='w-full' variant={'secondary'}>
+                        <Download className='mr-2' />
+                            ダウンロード
+                    </Button>
+                </div>
+            )}
         </div>
-    )
-}
+    );
+};
 
 export default ImageGenerator;
