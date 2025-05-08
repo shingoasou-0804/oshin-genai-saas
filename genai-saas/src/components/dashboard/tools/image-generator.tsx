@@ -6,14 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { GenerateImageState } from '@/types/actions';
 import React, { useActionState } from 'react';
-import { Download } from "lucide-react";
+import { Download, ImageIcon } from "lucide-react";
+import { cn } from '@/lib/utils';
+import LoadingSpinner from '../loading-spinner';
 
 const initialState: GenerateImageState = {
     status: "idle",
 }
 
 const ImageGenerator = () => {
-    const [state, formAction] = useActionState(generateImage, initialState);
+    const [state, formAction, pending] = useActionState(generateImage, initialState);
 
     return (
         <div className='space-y-6'>
@@ -28,7 +30,20 @@ const ImageGenerator = () => {
                             required
                         />
                     </div>
-                    <Button>画像を生成する</Button>
+                    <Button
+                        type='submit'
+                        disabled={pending}
+                        className={cn("w-full duration-200", pending && "bg-primary/80")}
+                    >
+                        {pending ? (
+                            <LoadingSpinner />
+                        ) : (
+                            <>
+                                <ImageIcon className='mr-2' />
+                                画像を生成する
+                            </>
+                        )}
+                    </Button>
                 </form>
             </div>
 
