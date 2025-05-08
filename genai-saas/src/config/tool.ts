@@ -1,6 +1,6 @@
 import ImageGenerator from "@/components/dashboard/tools/image-generator";
 import ImageOptimizer from "@/components/dashboard/tools/image-optimizer";
-import RemoveBackground from "@/components/dashboard/tools/remove-background";
+import BackgroundRemover from "@/components/dashboard/tools/background-remover";
 
 export const tools = {
     "image-generator": {
@@ -11,7 +11,7 @@ export const tools = {
     "remove-background": {
         title: "背景削除",
         description: "画像の背景を削除します",
-        component: RemoveBackground,
+        component: BackgroundRemover,
     },
     "image-optimizer": {
         title: "画像最適化",
