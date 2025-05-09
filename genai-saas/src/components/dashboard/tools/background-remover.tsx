@@ -1,30 +1,30 @@
 "use client";
 
-import { generateImage } from '@/actions/actions';
+import { removeBackground } from '@/actions/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { GenerateImageState } from '@/types/actions';
+import { RemoveBackgroundState } from '@/types/actions';
 import React, { useActionState } from 'react';
 import { Download, Layers } from "lucide-react";
 import { cn } from '@/lib/utils';
 import LoadingSpinner from '../loading-spinner';
 import { toast } from '@/hooks/use-toast';
 
-const initialState: GenerateImageState = {
+const initialState: RemoveBackgroundState = {
     status: "idle",
 }
 
 const BackgroundRemover = () => {
-    const [state, formAction, pending] = useActionState(generateImage, initialState);
+    const [state, formAction, pending] = useActionState(removeBackground, initialState);
 
     const handleDownload = () => {
-        if (!state.imageUrl) {
+        if (!state.processedImage) {
             return;
         }
 
         try {
-            const base64Data = state.imageUrl.split(",")[1];
+            const base64Data = state.processedImage.split(",")[1];
             const blob = new Blob([Buffer.from(base64Data, "base64")], {
                 type: "image/png",
             });
@@ -32,7 +32,7 @@ const BackgroundRemover = () => {
             const link = document.createElement("a");
 
             link.href = url;
-            link.download = `${state.keyword}.png`;
+            link.download = `image.png`;
             document.body.appendChild(link);
             link.click();
 
@@ -87,12 +87,12 @@ const BackgroundRemover = () => {
             </div>
 
             {/* image preview */}
-            {state.imageUrl && (
+            {state.processedImage && (
                 <div className='space-4'>
                     <div className='overflow-hidden rounded-lg border bg-background'>
                         <div className='aspect-video relative'>
                             <img
-                                src={state.imageUrl}
+                                src={state.processedImage}
                                 alt='Generated image'
                                 className='w-full h-full object-cover'
                             />
