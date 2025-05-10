@@ -16,11 +16,11 @@ export default function DashboardRootLayout({
       <header className="sticky top-0 z-40 border-b bg-background">
         <div className="flex items-center h-16 px-4">
           <MobileNav />
-          <div className="flex w-full">
+          <div className="flex items-center w-full">
             <Link href="/">
               <h1 className="text-lg font-bold">AI Images Generator</h1>
             </Link>
-            <div className="ml-auto">
+            <div className="ml-auto hidden md:block">
               <AuthButton />
             </div>
           </div>
