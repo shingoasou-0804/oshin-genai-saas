@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from '@clerk/nextjs'
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 
@@ -19,12 +20,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
-      <body
-        className={`${notoSansJP.className}  antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider afterSignOutUrl={"/dashboard"}>
+      <html lang="ja">
+        <body
+          className={`${notoSansJP.className}  antialiased`}
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
