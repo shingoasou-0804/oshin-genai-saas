@@ -1,19 +1,26 @@
 "use server";
 
-import { decrementUserCredits } from "@/lib/credits";
+import { decrementUserCredits, getUserCredits } from "@/lib/credits";
 import { GenerateImageState, RemoveBackgroundState } from "@/types/actions";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function generateImage(
     state: GenerateImageState,
     formData: FormData
 ): Promise<GenerateImageState> {
+    const user = await currentUser();
+    if (!user) {
+        throw new Error("Authentication required");
+    }
+
+    const credits = await getUserCredits();
+    if (credits === null || credits < 1) {
+        redirect("/dashboard/plan?reason=insufficient_credits");
+    }
+
     try {
-        const user = await currentUser();
-        if (!user) {
-            throw new Error("Authentication required");
-        }
         const keyword = formData.get('keyword');
 
         if (!keyword || typeof keyword !== "string") {
@@ -62,6 +69,16 @@ export async function removeBackground(
     state: RemoveBackgroundState,
     formData: FormData
 ): Promise<RemoveBackgroundState> {
+    const user = await currentUser();
+    if (!user) {
+        throw new Error("Authentication required");
+    }
+
+    const credits = await getUserCredits();
+    if (credits === null || credits < 1) {
+        redirect("/dashboard/plan?reason=insufficient_credits");
+    }
+
     const image = formData.get('image') as File;
 
     if (!image) {
@@ -82,6 +99,8 @@ export async function removeBackground(
         }
 
         const data = await response.json();
+        await decrementUserCredits(user.id);
+        revalidatePath("/dashboard");
 
         return {
             status: "success",
