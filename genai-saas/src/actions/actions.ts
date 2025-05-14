@@ -1,38 +1,56 @@
 "use server";
 
+import { decrementUserCredits } from "@/lib/credits";
 import { GenerateImageState, RemoveBackgroundState } from "@/types/actions";
+import { currentUser } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
 export async function generateImage(
     state: GenerateImageState,
     formData: FormData
 ): Promise<GenerateImageState> {
-    const keyword = formData.get('keyword');
-
-    if (!keyword || typeof keyword !== "string") {
-        return {
-            status: "error",
-            error: "キーワードを入力してください。",
-        };
-    }
-
     try {
-        const response = await fetch(`${process.env.BASE_URL}/api/generate-image`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ keyword }),
-        });
+        const user = await currentUser();
+        if (!user) {
+            throw new Error("Authentication required");
+        }
+        const keyword = formData.get('keyword');
 
-        const data = await response.json();
+        if (!keyword || typeof keyword !== "string") {
+            return {
+                status: "error",
+                error: "キーワードを入力してください。",
+            };
+        }
 
-        return {
-            status: "success",
-            imageUrl: data.imageUrl,
-            keyword: keyword,
+        try {
+            const response = await fetch(`${process.env.BASE_URL}/api/generate-image`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ keyword }),
+            });
+
+            const data = await response.json();
+
+            await decrementUserCredits(user.id);
+            revalidatePath("/dashboard");
+
+            return {
+                status: "success",
+                imageUrl: data.imageUrl,
+                keyword: keyword,
+            }
+        } catch (error) {
+            console.error(error);
+            return {
+                status: "error",
+                error: "画像の生成に失敗しました。",
+            }
         }
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return {
             status: "error",
             error: "画像の生成に失敗しました。",
