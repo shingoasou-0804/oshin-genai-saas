@@ -10,12 +10,14 @@ import { Download, Layers } from "lucide-react";
 import { cn } from '@/lib/utils';
 import LoadingSpinner from '../loading-spinner';
 import { toast } from '@/hooks/use-toast';
+import { useUser, SignInButton } from '@clerk/nextjs';
 
 const initialState: RemoveBackgroundState = {
     status: "idle",
 }
 
 const BackgroundRemover = () => {
+    const { isSignedIn } = useUser();
     const [state, formAction, pending] = useActionState(removeBackground, initialState);
 
     const handleDownload = () => {
@@ -69,20 +71,29 @@ const BackgroundRemover = () => {
                             required
                         />
                     </div>
-                    <Button
-                        type='submit'
-                        disabled={pending}
-                        className={cn("w-full duration-200", pending && "bg-primary/80")}
-                    >
-                        {pending ? (
-                            <LoadingSpinner />
-                        ) : (
-                            <>
-                                <Layers className='mr-2' />
-                                背景を削除する
-                            </>
-                        )}
-                    </Button>
+                    { isSignedIn ? (
+                        <Button
+                            type='submit'
+                            disabled={pending}
+                            className={cn("w-full duration-200", pending && "bg-primary/80")}
+                        >
+                            {pending ? (
+                                <LoadingSpinner />
+                            ) : (
+                                <>
+                                    <Layers className='mr-2' />
+                                    背景を削除する
+                                </>
+                            )}
+                        </Button>
+                    ) : (
+                        <SignInButton mode="modal">
+                            <Button className="w-full">
+                                <Layers className="mr-2" />
+                                ログインして背景を削除する
+                            </Button>
+                        </SignInButton>
+                    )}
                 </form>
             </div>
 

@@ -1,6 +1,24 @@
-import { getUserCredits } from "@/lib/credits"
+import { getUserCredits } from "@/lib/credits";
+import { currentUser } from "@clerk/nextjs/server";
+import { Lock, Loader2 } from "lucide-react";
+import { Suspense } from "react";
 
-const CreditDisplay = async () => {
+async function CreditsContent () {
+  const user = await currentUser();
+  if (!user) {
+    return (
+      <div className="rounded-lg border bg-background p-4">
+        <div className="text-sm font-medium text-muted-foreground">
+          残りクレジット
+        </div>
+        <div className="mt-2 flex items-center gap-2 text-muted-foreground text-sm">
+          <Lock className="size-3" />
+          <span>ログインが必要です。</span>
+        </div>
+      </div>
+    );
+  }
+
   const credits = await getUserCredits();
 
   return (
@@ -12,7 +30,25 @@ const CreditDisplay = async () => {
         {credits} クレジット
       </div>
     </div>
-  )
+  );
+}
+
+const CreditDisplay = async () => {
+  return (
+    <Suspense fallback={
+      <div className="rounded-lg border bg-background p-4">
+        <div className="text-sm font-medium text-muted-foreground">
+          残りクレジット
+        </div>
+        <div className="mt-2 flex items-center gap-2 text-muted-foreground text-sm">
+          <Loader2 className="size-3 animate-spin" />
+          <span className="text-muted-foreground">読み込み中...</span>
+        </div>
+      </div>
+    }>
+      <CreditsContent />
+    </Suspense>
+  );
 }
 
 export default CreditDisplay

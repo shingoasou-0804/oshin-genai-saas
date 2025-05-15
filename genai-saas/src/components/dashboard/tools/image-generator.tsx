@@ -10,12 +10,15 @@ import { Download, ImageIcon } from "lucide-react";
 import { cn } from '@/lib/utils';
 import LoadingSpinner from '../loading-spinner';
 import { toast } from '@/hooks/use-toast';
+import { useUser, SignInButton } from '@clerk/nextjs';
 
 const initialState: GenerateImageState = {
     status: "idle",
 }
 
 const ImageGenerator = () => {
+    const { isSignedIn } = useUser();
+
     const [state, formAction, pending] = useActionState(generateImage, initialState);
 
     const handleDownload = () => {
@@ -67,20 +70,29 @@ const ImageGenerator = () => {
                             required
                         />
                     </div>
-                    <Button
-                        type='submit'
-                        disabled={pending}
-                        className={cn("w-full duration-200", pending && "bg-primary/80")}
-                    >
-                        {pending ? (
-                            <LoadingSpinner />
-                        ) : (
-                            <>
-                                <ImageIcon className='mr-2' />
-                                画像を生成する
-                            </>
-                        )}
-                    </Button>
+                    { isSignedIn ? (
+                        <Button
+                            type='submit'
+                            disabled={pending}
+                            className={cn("w-full duration-200", pending && "bg-primary/80")}
+                        >
+                            {pending ? (
+                                <LoadingSpinner />
+                            ) : (
+                                <>
+                                    <ImageIcon className='mr-2' />
+                                    画像を生成する
+                                </>
+                            )}
+                        </Button>
+                    ) : (
+                        <SignInButton mode="modal">
+                            <Button className="w-full">
+                                <ImageIcon className="mr-2" />
+                                ログインして画像を生成する
+                            </Button>
+                        </SignInButton>
+                    )}
                 </form>
             </div>
 
