@@ -4,16 +4,20 @@ import { createStripeSession } from "@/actions/stripe";
 import { Button } from "@/components/ui/button";
 import { plans } from "@/config/plans";
 import { toast } from "@/hooks/use-toast";
+import { StripeState } from "@/types/actions";
 import { Check } from "lucide-react";
 import { useActionState } from "react";
 
-const initialState = {
+const initialState: StripeState = {
   status: "idle",
   error: "",
+  redirectUrl: "",
 };
 
 const Plan = () => {
-  const [state, formAction] = useActionState(async(prevState, formData) => {
+  const [state, formAction] = useActionState(
+    async(prevState: StripeState, formData: FormData
+  ) => {
     const result = await createStripeSession(prevState, formData);
 
     if (result.status === "error") {
