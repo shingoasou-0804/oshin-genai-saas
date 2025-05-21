@@ -1,5 +1,6 @@
 "use server";
 
+import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import Stripe from "stripe";
 
@@ -16,6 +17,29 @@ export async function createStripeSession(prevState, formData: FormData) {
     throw new Error("認証が必要です。");
   }
   try {
+    const dbUser = await prisma.user.findUnique({
+      where: { clerkId: user.id },
+    });
+
+    let customerId = dbUser?.stripeCustomerId;
+
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        customer: customerId,
+        email: user.emailAddresses[0].emailAddress,
+        metadata: {
+          clerkId: user.id,
+        },
+      });
+
+      await prisma.user.update({
+        where: { clerkId: user.id },
+        data: { stripeCustomerId: customer.id },
+      });
+
+      customerId = customer.id;
+    }
+
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
