@@ -43,13 +43,13 @@ export async function POST(request: Request) {
 
       switch(subscription.items.data[0].price.id) {
         case "price_1RQGqJA7Nyoj2Kof0dcvz6nu":
-          subscriptionStatus = "FREE";
+          subscriptionStatus = "STARTER";
           break;
         case "price_1RQGrBA7Nyoj2KofCTMT1zS4":
-          subscriptionStatus = "BASIC";
+          subscriptionStatus = "Pro";
           break;
         case "price_1RQHBvA7Nyoj2KofxkrqBIcL":
-          subscriptionStatus = "PRO";
+          subscriptionStatus = "ENTERPRISE";
           break;
       }
 
