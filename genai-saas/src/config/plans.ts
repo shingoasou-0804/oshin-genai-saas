@@ -27,6 +27,6 @@ export const plans = [
     description: "ビジネス向けの完全なソリューション",
     features: ["月300クレジット付与", "24時間優先サポート", "API利用可能", "メールサポート", "カスタマイズ可能"],
     buttonText: "Enterpriseプランを選択",
-    priceId: "pprice_1RQHBvA7Nyoj2KofxkrqBIcL",
+    priceId: "price_1RQHBvA7Nyoj2KofxkrqBIcL",
   },
 ]
